@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import WebCam from './WebCam';
+import Image from './Image';
 import './App.css';
 
 const App = () => {
-  const [isCapturePhoto, setIsCapturePhoto] = useState(false);
-  
-  const handleCaptureClick = () => {
-    setIsCapturePhoto(true);
-  }
-
   return (
-    <div className="main">
-      <h1 className="title">Emotion Detector</h1> // your title here
-      <WebCam isCapturePhoto={isCapturePhoto} setIsCapturePhoto={setIsCapturePhoto} />
-      <div className="buttons">
-        <button className="button" onClick={() => setIsCapturePhoto(false)}>Detect with Video</button>
-        <button className="button" onClick={handleCaptureClick}>Detect with Photo</button>
+    <Router>
+      <div className="main">
+        <h1 className="title">Emotion Detector</h1>
+        <div className="buttons">
+          <Link to="/detect-with-video" className="button">Detect with Video</Link>
+          <Link to="/detect-with-photo" className="button">Detect with Photo</Link>
+        </div>
+
+        <Routes>
+          <Route path="/detect-with-video" element={<WebCam />} />
+          <Route path="/detect-with-photo" element={<Image />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   )
 }
 
