@@ -1,25 +1,64 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useEffect, useState } from 'react';
+import Webcam from 'react-webcam';
+import io from 'socket.io-client';
+import './App.css';  // Import a CSS file
 
-function App() {
+const WebCamComponent = () => {
+  const webcamRef = useRef(null);
+  const socketRef = useRef();
+  const [emotion, setEmotion] = useState('');
+
+  useEffect(() => {
+    socketRef.current = io.connect('http://localhost:8000');
+
+    socketRef.current.on('emotion', data => {
+      setEmotion(data.emotion);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (webcamRef.current) {
+        const image = webcamRef.current.getScreenshot();
+        if (image) {
+          socketRef.current.emit('frame', { image });
+        }
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
+
+  const videoConstraints = {
+    width: 1200,
+    height: 1200,
+    facingMode: 'user',
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="webcam">
+        <Webcam
+          audio={false}
+          height={900}
+          width={1000}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          videoConstraints={videoConstraints}
+        />
+      </div>
+      <div className="emotion">
+        <h2>Emotion</h2>
+        <p>{emotion}</p>
+      </div>
     </div>
   );
-}
+};
 
-export default App;
+export default WebCamComponent;
