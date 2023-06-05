@@ -32,7 +32,7 @@ const Image = () => {
   };
 
   return (
-    <div>
+    <div className='image-container'>
       {cameraEnabled ? (
         <div>
           <Webcam

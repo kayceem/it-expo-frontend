@@ -12,13 +12,17 @@ const videoConstraints = {
 const WebCam = () => {
   const webcamRef = useRef(null);
   const socketRef = useRef();
-  const [emotion, setEmotion] = useState('Smile');
+  const [emotion, setEmotion] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
 
   useEffect(() => {
     socketRef.current = io.connect('http://localhost:8000');
 
-    socketRef.current.on('emotion', data => {
+    socketRef.current.on('data', data => {
       setEmotion(data.emotion);
+      setGender(data.gender);
+      setAge(data.age);
     });
 
     return () => {
@@ -42,20 +46,26 @@ const WebCam = () => {
   }, []);
 
   return (
-    <div className="app">
+    <div className="webcam-container">
       <div className="webcam">
-        <Webcam
-          audio={false}
-          height={900}
-          width={1000}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-        />
+          <Webcam
+            audio={false}
+            height={900}
+            width={900}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+          />
       </div>
       <div className="emotion">
         <h2>Emotion</h2>
         <p>{emotion}</p>
+        <br></br>
+        <h2>Age</h2>
+        <p>{age}</p>
+        <br></br>
+        <h2>Gender</h2>
+        <p>{gender}</p>
       </div>
     </div>
   );
