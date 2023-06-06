@@ -1,8 +1,16 @@
 import React, { useRef } from 'react';
 import Webcam from "react-webcam";
 import axios from 'axios';
+import './Login.css';
+import { Link } from 'react-router-dom';
 
-const Login = () => {
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: 'user',
+};
+
+const Login = ({ setIsLoggedIn }) => {
   const webcamRef = useRef(null);
 
   const capture = React.useCallback(
@@ -14,6 +22,7 @@ const Login = () => {
         .then(response => {
           if (response.data.status === 'ok') {
             alert(`User verified! User ID: ${response.data.user_id}`);
+            setIsLoggedIn(true); // Set isLoggedIn to true when user is verified
           } else {
             alert(`Error: ${response.data.status}`);
           }
@@ -22,15 +31,27 @@ const Login = () => {
           console.error(err);
         });
     },
-    [webcamRef]
+    [webcamRef, setIsLoggedIn] // Add setIsLoggedIn to the dependency array
   );
 
   return (
-    <div>
-      <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
-      <button onClick={capture}>Login</button>
+    <div className='container'>
+      <div className='image'>
+        <Webcam 
+                    audio={false}
+                    height={565}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    width={1000}
+                    videoConstraints={videoConstraints}
+        />
+      </div>
+      <div className='button-class'>
+        <Link to="/" className="button">Login</Link>
+      </div>
     </div>
   )
 }
 
 export default Login;
+

@@ -10,7 +10,7 @@ const videoConstraints = {
   facingMode: 'user',
 };
 
-const Signup = () => {
+const SignUp = () => {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = React.useState(null);
   const navigate = useNavigate(); // Get the navigate function
@@ -66,4 +66,4 @@ return (
   );
 }
 
-export default Signup;
+export default SignUp;
