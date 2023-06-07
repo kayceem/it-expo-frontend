@@ -1,8 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Webcam from "react-webcam";
 import axios from 'axios';
 import './Login.css';
-import { Link } from 'react-router-dom';
+import Modal from './Modal.js';
+import LoadingSpinner from './LoadingSpinner';
 
 const videoConstraints = {
   width: 1280,
@@ -10,48 +12,68 @@ const videoConstraints = {
   facingMode: 'user',
 };
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ isLoggedIn, setIsLoggedIn }) => {
   const webcamRef = useRef(null);
+  const [modalText, setModalText] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const closeModal = () => {
+    setShowModal(false);
+  }
+  const navigatePath = () => {
+    (isLoggedIn ? navigate('/'): setShowModal(false));
+  }
 
   const capture = React.useCallback(
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
-      
-      // Send the image to the backend
+      setLoading(true);
       axios.post('http://localhost:8000/login', { image: imageSrc })
         .then(response => {
+          setLoading(false);
           if (response.data.status === 'ok') {
-            alert(`User verified! User ID: ${response.data.user_id}`);
-            setIsLoggedIn(true); // Set isLoggedIn to true when user is verified
+            setModalText(`User verified! User ID: ${response.data.user_id}`);
+            setShowModal(true);
+            setIsLoggedIn(true);
           } else {
-            alert(`Error: ${response.data.status}`);
+            setModalText(`Error: ${response.data.status}`);
+            setShowModal(true);
           }
         })
         .catch(err => {
+          setLoading(false);
+          setModalText(`Error: ${err}`);
+          setShowModal(true);
           console.error(err);
         });
     },
-    [webcamRef, setIsLoggedIn] // Add setIsLoggedIn to the dependency array
+    [webcamRef, setIsLoggedIn]
   );
 
   return (
-    <div className='container'>
-      <div className='image'>
+    <div className='login-container'>
+      <div className='login-webcam'>
         <Webcam 
-                    audio={false}
-                    height={565}
-                    ref={webcamRef}
-                    screenshotFormat="image/jpeg"
-                    width={1000}
-                    videoConstraints={videoConstraints}
+          audio={false}
+          height={500}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          width={800}
+          videoConstraints={videoConstraints}
         />
       </div>
       <div className='button-class'>
-        <Link to="/" className="button">Login</Link>
+      <button className={`${loading ? 'disabled' : 'image-button'}`} onClick={capture} disabled={loading}>Login</button>
+
       </div>
+      {loading && <LoadingSpinner />}
+      {showModal && (
+        <Modal closeModal={closeModal} modalText={modalText} navigatePath={navigatePath}/>
+      )}
     </div>
-  )
-}
+  );
+};
 
 export default Login;
-

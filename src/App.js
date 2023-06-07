@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WebCam from './WebCam';
+import Navbar from './Navbar';
 import Image from './Image';
 import Dashboard from './Dashboard';
 import SignUp from './SignUp';
 import Login from './Login';
+import Logout from './Logout';
 import { ProtectedRoute } from './ProtectedRoute'; 
 import './App.css';
 
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  
   return (
+    <div className='main'>
     <Router>
-      <div className="main">
-        <h1 className="title">Emotion Detector</h1>
+      <Navbar isLoggedIn ={isLoggedIn}/>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Dashboard /></ProtectedRoute>} />
           <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/detect-with-video" element={<ProtectedRoute isLoggedIn={isLoggedIn}><WebCam /></ProtectedRoute>} />
           <Route path="/detect-with-photo" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Image /></ProtectedRoute>} />
+          <Route path="/logout" element={<Logout setIsLoggedIn={setIsLoggedIn} />} />
         </Routes>
-      </div>
     </Router>
+    </div>
   );
 };
-
 
 export default App;

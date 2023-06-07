@@ -1,67 +1,105 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Webcam from 'react-webcam';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
+import Modal from './Modal.js';
+import LoadingSpinner from './LoadingSpinner';
 
 const videoConstraints = {
-  width: 1280,
+  width: 1200,
   height: 720,
   facingMode: 'user',
 };
 
 const SignUp = () => {
   const webcamRef = useRef(null);
-  const [capturedImage, setCapturedImage] = React.useState(null);
-  const navigate = useNavigate(); // Get the navigate function
+  const [capturedImage, setCapturedImage] = useState(null);
+  const navigate = useNavigate();
+  const [isTakingPhoto, setIsTakingPhoto] = useState(false);
+  const [signupState, setsignupState] = useState('Sign up');
+  const [modalText, setModalText] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [signedUp, setSignedUp] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const capture = React.useCallback(
-    () => {
-      const imageSrc = webcamRef.current.getScreenshot();
-      setCapturedImage(imageSrc);
-    },
-    [webcamRef]
-  );
+
+  const closeModal = () => {
+    setShowModal(false);
+  }
+  
+  const navigatePath = () => {
+    (signedUp ? navigate('/login'):closeModal());
+  }
+  const handleCaptureClick = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setCapturedImage(imageSrc);
+    setsignupState('Take again')
+    setIsTakingPhoto(false);
+  };
+
+
+  const handleTakePhotoClick = () => {
+    setIsTakingPhoto(true);
+    setCapturedImage(null);
+  };
 
   const handleSignUp = async () => {
     try {
+      setLoading(true);
       const response = await axios.post('http://localhost:8000/signup', { image: capturedImage });
       if(response.data.status === 'ok') {
-        // signup successful, navigate to login page
-        navigate('/login');
+        setModalText(`User Created! User ID: ${response.data.user_id}`);
+        setShowModal(true);
+        setSignedUp(true);
       } else {
-        // signup failed, show error message
-        alert('Signup failed: ' + response.data.status);
+        setLoading(false);
+        setModalText(`Error: ${response.data.status}`);
+        setShowModal(true);
       }
     } catch(error) {
-      console.error(error);
-      alert('An error occurred during signup: ' + error.message);
+      setLoading(false);
+      setModalText(`Error: ${TypeError}`);
+      setShowModal(true);
+      console.error(TypeError);
     }
   }
 
 return (
     <div className='signup'>
-      <div className='container'>
+      <div className='signup-container'>
         <div className='capture'>
-            <h2>Capture</h2>
-            <Webcam
-            audio={false}
-            height={565}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            width={1000}
-            videoConstraints={videoConstraints}
-            />
-            <button onClick={capture}>Capture photo</button>
+            {isTakingPhoto ? (
+              <Webcam
+              audio={false}
+              height={450}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              width={800}
+              videoConstraints={videoConstraints}
+              />
+            ) : null}
         </div>
         {capturedImage && (
             <div className='preview'>
-                <h2>Preview</h2>
             <img src={capturedImage} alt="preview" />
-            <button onClick={()=>handleSignUp(capturedImage)}>Sign Up</button>
             </div>
         )}
+
+        {!isTakingPhoto ? (
+          <div className='signup-buttons'>
+              <button className='image-button' onClick={handleTakePhotoClick}>{signupState}</button>
+              {capturedImage? (<button className='image-button' onClick={handleSignUp}>Sign Up</button>):(null)}
+            </div>):(
+              <div className='signup-buttons'>
+                <button className='image-button' onClick={handleCaptureClick}>Capture</button>
+            </div>)
+        }
         </div>
+      {loading && <LoadingSpinner />}
+      {showModal && (
+        <Modal closeModal={closeModal} modalText={modalText} navigatePath={navigatePath}/>
+      )}
     </div>
   );
 }

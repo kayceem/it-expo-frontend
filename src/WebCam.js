@@ -5,7 +5,7 @@ import './WebCam.css';  // Import a CSS file
 
 const videoConstraints = {
   width: 1200,
-  height: 1200,
+  height: 720,
   facingMode: 'user',
 };
 
@@ -38,7 +38,7 @@ const WebCam = () => {
           socketRef.current.emit('frame', { image });
         }
       }
-    }, 500);
+    }, 1000);
 
     return () => {
       clearInterval(interval);
@@ -50,8 +50,8 @@ const WebCam = () => {
       <div className="webcam">
           <Webcam
             audio={false}
-            height={900}
-            width={900}
+            height={450}
+            width={800}
             ref={webcamRef}
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
