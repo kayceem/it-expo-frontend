@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import io from 'socket.io-client';
-import './WebCam.css';  // Import a CSS file
+import './WebCam.css';
+import Title from './Title.js';
 
 const videoConstraints = {
   width: 1200,
@@ -47,6 +48,7 @@ const WebCam = () => {
 
   return (
     <div className="webcam-container">
+      <Title title={"Detect with Video"} set={false}/>
       <div className="webcam">
           <Webcam
             audio={false}

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 import Modal from './Modal.js';
 import LoadingSpinner from './LoadingSpinner';
+import Title from './Title.js';
+
 
 const videoConstraints = {
   width: 1200,
@@ -67,6 +69,7 @@ const SignUp = () => {
 
 return (
     <div className='signup'>
+      <Title title={"Signup"}/>
       <div className='signup-container'>
         <div className='capture'>
             {isTakingPhoto ? (

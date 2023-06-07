@@ -3,6 +3,8 @@ import Webcam from 'react-webcam';
 import axios from 'axios';
 import './Image.css';
 import LoadingSpinner from './LoadingSpinner';
+import Title from './Title.js';
+
 
 const videoConstraints = {
   width: 1280,
@@ -56,6 +58,7 @@ const Image = () => {
 
   return (
     <div className='image-container'>
+        <Title title={"Detect with Image"} set={false}/>
       <div className='image'>
         <div className='image-preview'>
           {selectedImage ? (

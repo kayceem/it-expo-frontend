@@ -4,6 +4,7 @@ import Webcam from "react-webcam";
 import axios from 'axios';
 import './Login.css';
 import Modal from './Modal.js';
+import Title from './Title.js';
 import LoadingSpinner from './LoadingSpinner';
 
 const videoConstraints = {
@@ -54,6 +55,7 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
 
   return (
     <div className='login-container'>
+      <Title title={"Login"}/>
       <div className='login-webcam'>
         <Webcam 
           audio={false}

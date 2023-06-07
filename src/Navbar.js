@@ -7,7 +7,7 @@ const Navbar = ({ isLoggedIn }) => {
       {!isLoggedIn && (
         <>
           <Link to="/login">Login</Link>
-          <Link to="/SignUp">Sign Up</Link>
+          <Link to="/signup">Sign Up</Link>
           <Link to="/guide">Guide</Link>
         </>
       )}

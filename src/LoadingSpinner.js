@@ -4,7 +4,7 @@ import './LoadingSpinner.css'
 
 const LoadingSpinner = () => (
   <div className="spinner-container">
-    <PacmanLoader color="#3afeff" size={50} />
+    <HashLoader color="#ffffff" size={50} />
   </div>
 );
 
