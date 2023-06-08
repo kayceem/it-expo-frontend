@@ -18,7 +18,7 @@ const WebCam = () => {
   const [gender, setGender] = useState('');
 
   useEffect(() => {
-    socketRef.current = io.connect('http://localhost:8000');
+    socketRef.current = io.connect('https://sandeshpoudel.info.np/ws/');
 
     socketRef.current.on('data', data => {
       setEmotion(data.emotion);
