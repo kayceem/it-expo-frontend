@@ -49,7 +49,7 @@ const SignUp = () => {
   const handleSignUp = async () => {
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/signup', { image: capturedImage });
+      const response = await axios.post('http://localhost:8000/api/signup', { image: capturedImage });
       if(response.data.status === 'ok') {
         setModalText(`User Created! User ID: ${response.data.user_id}`);
         setShowModal(true);

@@ -24,7 +24,7 @@ const Image = () => {
 
   const handleDetectClick = () => {
     setLoading(true);
-    axios.post('http://localhost:8000/image', { image: selectedImage })
+    axios.post('http://localhost:8000/api/image', { image: selectedImage })
     .then(response => {
         setLoading(false);
         setEmotion(response.data.emotion);

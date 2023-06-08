@@ -31,7 +31,7 @@ const Login = ({ isLoggedIn, setIsLoggedIn }) => {
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
       setLoading(true);
-      axios.post('http://localhost:8000/login', { image: imageSrc })
+      axios.post('http://localhost:8000/api/login', { image: imageSrc })
         .then(response => {
           setLoading(false);
           if (response.data.status === 'ok') {
